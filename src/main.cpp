@@ -13,7 +13,7 @@
 
 #include "logging.hpp"
 #include "Light.hpp"
-#include "LightsTracker.hpp"
+#include "LightsManager.hpp"
 #include "defines.hpp"
 
 // TODO: FIXME:
@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
     cli::Parser parser(argc, argv);
     std::string serverUrl;
     int interval;
-    LightsTracker tracker;
 
     // Get command line arguments
     parser.set_optional<std::string>("s", "server-url", LOCALHOST_URL,
@@ -52,12 +51,15 @@ int main(int argc, char **argv) {
     logging::logInfo("Starting lights_monitor...");
 
     // Initialize map with values from server
+    LightsManager lightsManager(serverUrl);
+    // TODO: move the following into LightsManager as a private function
     httplib::Client client(serverUrl);
     // TODO: Implement a retry mechanism here with a timeout, maybe do while
     if (auto res = client.Get(LIGHTS_ENDPOINT)) {
         if (httplib::StatusCode::OK_200 == res->status) {
             logging::logDebug("All lights request returned:\n" + res->body);
-        } // Other possible return types?
+            lightsManager.setInitialList(res->body);
+        } // TODO: Other possible return types?
     } else {
         auto err = res.error();
         logging::logError(httplib::to_string(err));

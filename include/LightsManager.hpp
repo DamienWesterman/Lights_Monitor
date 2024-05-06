@@ -3,7 +3,7 @@
 *
 * Applicant     Damien Westerman
 * Position:     C++ Developer
-* File:         LightsTracker.hpp
+* File:         LightsManager.hpp
 * Description:  Class declaration to track the Lights statuses
 *
 ***************************************************************************************************/
@@ -16,12 +16,14 @@
 #include "Light.hpp"
 
 // TODO: Doc comments
-class LightsTracker {
+class LightsManager {
     private:
         std::unordered_map<std::string, Light> lightsMap;
+        std::string serverUrl;
         bool getLightInfo(const std::string& id);
 
     public:
+        LightsManager(std::string serverUrl) : serverUrl(serverUrl) { }
         void setInitialList(const std::string& jsonList);
         void updateList(const std::string& jsonList);
 };

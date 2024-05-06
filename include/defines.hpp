@@ -16,4 +16,12 @@
 #define RETRY_SLEEP     1
 #define MAX_RETRIES     5
 
+#define JSON_KEY_ID         "id"
+#define JSON_KEY_NAME       "name"
+#define JSON_KEY_ROOM       "room"
+#define JSON_KEY_BRIGHTNESS "brightness"
+#define JSON_KEY_ON         "on"
+
+#define INVALID_ID          ""
+
 #endif //DEFINES_HPP

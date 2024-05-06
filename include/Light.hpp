@@ -15,14 +15,6 @@
 
 #include "json.hpp"
 
-#define JSON_KEY_ID         "id"
-#define JSON_KEY_NAME       "name"
-#define JSON_KEY_ROOM       "room"
-#define JSON_KEY_BRIGHTNESS "brightness"
-#define JSON_KEY_ON         "on"
-
-#define INVALID_ID          ""
-
 class Light {
     private:
         std::string id;

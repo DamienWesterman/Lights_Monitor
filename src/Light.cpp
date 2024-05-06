@@ -11,6 +11,7 @@
 #include "Light.hpp"
 
 #include "logging.hpp"
+#include "defines.hpp"
 
 Light::Light(const std::string& id, const std::string& name, const std::string& room,
              const uint8_t brightness, const bool on) :
@@ -30,7 +31,7 @@ Light::Light(const nlohmann::json& json) {
     if (json.empty()) {
         //Set to defaults if empty
         logging::logError("Json passed to constructor is empty");
-        Light((std::string)INVALID_ID);
+        Light(std::string(INVALID_ID));
         return;
     }
 
@@ -69,7 +70,7 @@ Light::Light(const nlohmann::json& json) {
         this->brightness = 0;
     }
 
-    if (json.contains(JSON_KEY_ON) && json[JSON_KEY_ON].is_string()) {
+    if (json.contains(JSON_KEY_ON) && json[JSON_KEY_ON].is_boolean()) {
         this->on = json[JSON_KEY_ON];
     } else {
         logging::logError("On not present or is invalid during initialization of " + id);
