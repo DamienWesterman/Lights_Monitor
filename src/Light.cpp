@@ -78,8 +78,54 @@ Light::Light(const nlohmann::json& json) {
     }
 }
 
-bool Light::applyPrintChanges(const Light& newLight) {
-    return false;
+bool Light::applyPrintChanges(Light& newLight) {
+    bool ret = false;
+
+    if (newLight.getId() != this->id) {
+        return ret;
+    }
+
+    if (newLight.getName() != this->name) {
+        this->name = newLight.getName();
+        nlohmann::json json = {
+            {JSON_KEY_ID, this->id},
+            {JSON_KEY_NAME, this->name}
+        };
+        logging::logInfo(json.dump());
+        ret = true;
+    }
+
+    if (newLight.getRoom() != this->room) {
+        this->room = newLight.getRoom();
+        nlohmann::json json = {
+            {JSON_KEY_ID, this->id},
+            {JSON_KEY_ROOM, this->room}
+        };
+        logging::logInfo(json.dump());
+        ret = true;
+    }
+
+    if (newLight.getBrightness() != this->brightness) {
+        this->brightness = newLight.getBrightness();
+        nlohmann::json json = {
+            {JSON_KEY_ID, this->id},
+            {JSON_KEY_BRIGHTNESS, this->brightness}
+        };
+        logging::logInfo(json.dump());
+        ret = true;
+    }
+
+    if (newLight.getOn() != this->on) {
+        this->on = newLight.getOn();
+        nlohmann::json json = {
+            {JSON_KEY_ID, this->id},
+            {JSON_KEY_ON, this->on}
+        };
+        logging::logInfo(json.dump());
+        ret = true;
+    }
+
+    return ret;
 }
 
 std::string Light::getJsonString(void) {

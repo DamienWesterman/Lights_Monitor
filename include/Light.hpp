@@ -54,7 +54,7 @@ class Light {
          * \param   newLight Most recent Light object information
          * \return  true/false if anything changed
         */
-        bool applyPrintChanges(const Light& newLight);
+        bool applyPrintChanges(Light& newLight);
 
         /**
          * \brief   Return a json string representation of this object

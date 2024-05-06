@@ -59,6 +59,8 @@ int main(int argc, char **argv) {
         if (httplib::StatusCode::OK_200 == res->status) {
             logging::logDebug("All lights request returned:\n" + res->body);
             lightsManager.setInitialList(res->body);
+
+lightsManager.updateList(res->body);
         } // TODO: Other possible return types?
     } else {
         auto err = res.error();

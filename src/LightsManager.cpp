@@ -32,6 +32,7 @@ bool LightsManager::getLightInfo(const std::string& id) {
                 // Save to map
                 this->lightsMap.insert(std::make_pair(id, light));
                 logging::logDebug("Saved light info for <" + light.getId() + ">");
+                ret = true;
             } else {
                 logging::logError("Issue saving returned light");
             }
@@ -52,6 +53,7 @@ void LightsManager::setInitialList(const std::string& jsonList) {
         for (auto jsonLight : jsonLightsList) {
             if (jsonLight.contains(JSON_KEY_ID) && jsonLight[JSON_KEY_ID].is_string()) {
                 getLightInfo(jsonLight[JSON_KEY_ID]);
+                // TODO: print the light stuff
             } else {
                 logging::logError("Key not present or is invalid during initialization");
             }
@@ -62,6 +64,8 @@ void LightsManager::setInitialList(const std::string& jsonList) {
 
 }
 
-void updateList(const std::string& jsonList) {
-    
+void LightsManager::updateList(const std::string& jsonList) {
+    for (auto light : this->lightsMap) {
+        light.second.applyPrintChanges(light.second);
+    }
 }
