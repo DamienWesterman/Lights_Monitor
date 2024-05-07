@@ -91,7 +91,7 @@ bool Light::applyPrintChanges(Light& newLight) {
             {JSON_KEY_ID, this->id},
             {JSON_KEY_NAME, this->name}
         };
-        logging::logInfo(json.dump());
+        logging::logJsonInfo(json);
         ret = true;
     }
 
@@ -101,7 +101,7 @@ bool Light::applyPrintChanges(Light& newLight) {
             {JSON_KEY_ID, this->id},
             {JSON_KEY_ROOM, this->room}
         };
-        logging::logInfo(json.dump());
+        logging::logJsonInfo(json);
         ret = true;
     }
 
@@ -111,7 +111,7 @@ bool Light::applyPrintChanges(Light& newLight) {
             {JSON_KEY_ID, this->id},
             {JSON_KEY_BRIGHTNESS, this->brightness}
         };
-        logging::logInfo(json.dump());
+        logging::logJsonInfo(json);
         ret = true;
     }
 
@@ -121,14 +121,14 @@ bool Light::applyPrintChanges(Light& newLight) {
             {JSON_KEY_ID, this->id},
             {JSON_KEY_ON, this->on}
         };
-        logging::logInfo(json.dump());
+        logging::logJsonInfo(json);
         ret = true;
     }
 
     return ret;
 }
 
-std::string Light::getJsonString(void) {
+nlohmann::json Light::getJson(void) {
     nlohmann::json json = {
         {JSON_KEY_ID, this->id},
         {JSON_KEY_NAME, this->name},
@@ -136,5 +136,10 @@ std::string Light::getJsonString(void) {
         {JSON_KEY_BRIGHTNESS, this->brightness},
         {JSON_KEY_ON, this->on}
     };
-    return json.dump();
+
+    return json;
+}
+
+std::string Light::getJsonString(void) {
+    return getJson().dump();
 }

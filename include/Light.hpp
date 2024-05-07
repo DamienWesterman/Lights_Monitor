@@ -63,10 +63,17 @@ class Light {
         */
         std::string getJsonString(void);
 
+        /**
+         * \brief   Return a json representation of this object
+         * \param   void
+         * \return  json
+        */
+        nlohmann::json getJson(void);
+
         std::string getId(void) { return this->id; }
-        void setName(const std::string& name) { this->name = name; }
+        void setName(const std::string name) { this->name = name; }
         std::string getName(void) { return this->name; }
-        void setRoom(const std::string& room) { this->room = room; }
+        void setRoom(const std::string room) { this->room = room; }
         std::string getRoom(void) { return this->room; }
 
         /**

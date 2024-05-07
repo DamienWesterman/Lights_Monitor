@@ -16,6 +16,8 @@
 #include <iomanip>
 #include <ctime>
 
+#include "json.hpp"
+
 namespace logging {
     /**
      * \brief   Logs an informational message to the console
@@ -30,6 +32,21 @@ namespace logging {
                   << " " << std::setw(2) << time->tm_hour << ":" << std::setw(2)
                   << time->tm_min << ":" << std::setw(2) << time->tm_sec << " - "
                   << message << std::endl;
+    }
+
+    /**
+     * \brief   Logs an informational message to the console
+     * \param   json Json object to print
+     * \return  void
+    */
+    inline void logJsonInfo(const nlohmann::json& json) {
+        std::time_t now = std::time(nullptr);
+        std::tm* time = std::localtime(&now);
+        std::cout << "[INFO]  " << std::setfill('0') << std::setw(2) << time->tm_mon + 1
+                  << "/" << std::setw(2) << time->tm_mday << "/" << time->tm_year + 1900
+                  << " " << std::setw(2) << time->tm_hour << ":" << std::setw(2)
+                  << time->tm_min << ":" << std::setw(2) << time->tm_sec << " - \n"
+                  << std::setw(4) << std::setfill(' ') << json << std::endl;
     }
 
     /**

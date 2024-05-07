@@ -11,10 +11,9 @@
 #ifndef DEFINES_HPP
 #define DEFINES_HPP
 
-#define LOCALHOST_URL   "localhost:8080"
-#define LIGHTS_ENDPOINT "/lights"
-#define RETRY_SLEEP     1
-#define MAX_RETRIES     5
+#define LOCALHOST_URL       "localhost:8080"
+#define LIGHTS_ENDPOINT     "/lights"
+#define MAX_RETRIES         5
 
 #define JSON_KEY_ID         "id"
 #define JSON_KEY_NAME       "name"
