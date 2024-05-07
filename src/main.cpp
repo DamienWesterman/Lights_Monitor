@@ -10,9 +10,9 @@
 
 #include <unordered_map>
 #include <csignal>
+#include <atomic>
 
 #include "cmdparser.hpp"
-#include "httplib.h"
 
 #include "logging.hpp"
 #include "Light.hpp"
@@ -26,18 +26,11 @@ static void signalHandler(int signal) {
     userExit = true;
 }
 
-// TODO: FIXME:
-    // License stuff in each header file
-    // If http request is not found or whatever, output message to user saying check url
-    // REEAALLY go back through trying to find possible error conditions
-    // Debug for entering and exiting functions along with parameters
-    // MAKE SURE USE .dump() FOR EACH JSON THING
-    // Check imports
-
 int main(int argc, char **argv) {
     cli::Parser parser(argc, argv);
     std::string serverUrl;
-    int interval;
+    int interval = 1;
+    int num_retries = 0;
     std::unordered_map<std::string, Light> lightsMap;
 
     logging::logInfo("Damien Westerman's solution for Josh.ai C++ coding challenge");
@@ -68,57 +61,78 @@ int main(int argc, char **argv) {
 
     // Initialize map with values from server
     ServerClient serverClient(serverUrl);
-    // TODO: Implement a retry mechanism here with a timeout, maybe do while
-    for (std::string id : serverClient.getAllLights()) {
-        serverClient.getOneLight(id);
-        Light light(serverClient.getOneLight(id));
-        if (INVALID_ID != light.getId()) {
-            // Save to map
-            lightsMap.insert(std::make_pair(id, light));
-            logging::logJsonInfo(light.getJson());
+
+    do {
+        std::vector<std::string> idList;
+
+        if (serverClient.getAllLights(&idList)) {
+            for (std::string id : idList) {
+                Light light(serverClient.getOneLight(id));
+                if (INVALID_ID != light.getId()) {
+                    // Save to map
+                    lightsMap.insert(std::make_pair(id, light));
+                    logging::logJsonInfo(light.getJson());
+                } else {
+                    logging::logError("Issue saving returned light");
+                }
+            }
+
+            // Successfully saved all lights, break out of do/while
+            break;
         } else {
-            logging::logError("Issue saving returned light");
+            // Already logged in getAllLights(), intentionally left empty. Continue
         }
+
+        logging::logInfo("Retrying get request...");
+        num_retries++;
+
+        sleep(1);
+    } while(MAX_RETRIES > num_retries);
+
+    if (MAX_RETRIES == num_retries) {
+        logging::logError("Max number of retries exceeded. Please check server is up or double check your URL:PORT <"
+                          + serverUrl + ">. Continuing...");
     }
-    // logging::logInfo("Retrying get request...");
-    // Exit if still haven't retrieved info
 
     // Check server every 'interval' seconds and prints updates
     while (!userExit) {
         sleep(interval);
-        std::unordered_map<std::string, Light> tempMap;
-        lightsMap.swap(tempMap);
 
-        // TODO: Implement error check mechanism, otherwise deletes everything
-        // TODO: only print a "disconnected from server" message, then again when reconnect
-        for (std::string id : serverClient.getAllLights()) {
-            serverClient.getOneLight(id);
-            Light light(serverClient.getOneLight(id));
-            if (INVALID_ID != id) {
-                if (tempMap.find(id) != tempMap.end()) {
-                    // Light exists, add to lightsMap and check for updates
-                    lightsMap.insert(std::make_pair(id, tempMap.at(id)));
-                    tempMap.erase(id);
-                    lightsMap.at(id).applyPrintChanges(light);
+        std::vector<std::string> idList;
+
+        if (serverClient.getAllLights(&idList)) {
+            std::unordered_map<std::string, Light> tempMap;
+            lightsMap.swap(tempMap);
+
+            for (std::string id : idList) {
+                Light light(serverClient.getOneLight(id));
+                if (INVALID_ID != id) {
+                    if (tempMap.find(id) != tempMap.end()) {
+                        // Light exists, add to lightsMap and check for updates
+                        lightsMap.insert(std::make_pair(id, tempMap.at(id)));
+                        tempMap.erase(id);
+                        lightsMap.at(id).applyPrintChanges(light);
+                    } else {
+                        // Light does not exist, add and log it
+                        lightsMap.insert(std::make_pair(id, light));
+                        logging::logJsonInfo(light.getJson());
+                    }
                 } else {
-                    // Light does not exist, add and log it
-                    lightsMap.insert(std::make_pair(id, light));
-                    logging::logJsonInfo(light.getJson());
+                    logging::logError("Issue retrieving light");
                 }
-            } else {
-                logging::logError("Issue retrieving light");
             }
-        }
 
-        // Any remaining lights have since been deleted
-        if (0 < tempMap.size()) {
-            for (auto& pair : tempMap) {
-                logging::logInfo(pair.second.getName() + " (" + pair.second.getId()
-                                + ") has been removed");
+            // Any remaining lights have since been deleted
+            if (0 < tempMap.size()) {
+                for (auto& pair : tempMap) {
+                    logging::logInfo(pair.second.getName() + " (" + pair.second.getId()
+                                    + ") has been removed");
+                }
             }
+        } else {
+            // Already logged in getAllLights(), intentionally left empty. Continue
         }
-
-    }
+    } // while(!userExit)
 
     logging::logInfo("Exiting lights_monitor...");
     return 0;

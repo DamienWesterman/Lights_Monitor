@@ -11,7 +11,9 @@
 #ifndef SERVER_CLIENT_HPP
 #define SERVER_CLIENT_HPP
 
-#include "Light.hpp"
+#include <string>
+
+#include "json.hpp"
 
 class ServerClient {
     private:
@@ -22,7 +24,7 @@ class ServerClient {
          * \brief   Constructor
          * \param   serverUrl url and port of server
         */
-        ServerClient(std::string serverUrl) : serverUrl(serverUrl) { }
+        ServerClient(const std::string& serverUrl) : serverUrl(serverUrl) { }
 
         /**
          * \brief   Retrieve one light's information from the server
@@ -33,12 +35,12 @@ class ServerClient {
 
         /**
          * \brief   Retrieve the IDs of all lights
-         * \param   void
-         * \return  vector of string IDs
+         * \param   ret Return variable of a list of string IDs
+         * \return  true/false of success
         */
-        std::vector<std::string> getAllLights(void);
+        bool getAllLights(std::vector<std::string> *ret);
 
-        void setServerUrl(const std::string serverUrl) { this->serverUrl = serverUrl; }
+        void setServerUrl(const std::string& serverUrl) { this->serverUrl = serverUrl; }
         std::string getServerUrl(void) { return this->serverUrl; }
 };
 

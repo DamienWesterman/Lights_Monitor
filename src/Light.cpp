@@ -26,7 +26,6 @@ Light::Light(const std::string& id) : id(id) {
 
 Light::Light(const nlohmann::json& json) {
     int brightnessTemp = 0;
-    (void)brightnessTemp;
 
     if (json.empty()) {
         //Set to defaults if empty

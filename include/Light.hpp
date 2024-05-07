@@ -71,9 +71,9 @@ class Light {
         nlohmann::json getJson(void);
 
         std::string getId(void) { return this->id; }
-        void setName(const std::string name) { this->name = name; }
+        void setName(const std::string& name) { this->name = name; }
         std::string getName(void) { return this->name; }
-        void setRoom(const std::string room) { this->room = room; }
+        void setRoom(const std::string& room) { this->room = room; }
         std::string getRoom(void) { return this->room; }
 
         /**

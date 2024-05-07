@@ -40,10 +40,10 @@ nlohmann::json ServerClient::getOneLight(const std::string& id) {
     return retJson;
 }
 
-std::vector<std::string> ServerClient::getAllLights(void) {
-    std::vector<std::string> retList;
+bool ServerClient::getAllLights(std::vector<std::string> *ret) {
     httplib::Client client(this->serverUrl);
     nlohmann::json jsonLightsList;
+    bool success = false;
 
     if (auto res = client.Get(LIGHTS_ENDPOINT)) {
         if (httplib::StatusCode::OK_200 == res->status) {
@@ -55,7 +55,7 @@ std::vector<std::string> ServerClient::getAllLights(void) {
                 for (auto jsonLight : jsonLightsList) {
                     if (jsonLight.contains(JSON_KEY_ID) && jsonLight[JSON_KEY_ID].is_string()) {
                         std::string id(jsonLight[JSON_KEY_ID]);
-                        retList.push_back(id);
+                        ret->push_back(id);
                         logging::logDebug("Adding ID to list: " + id);
                     } else {
                         logging::logError("Key not present or is invalid during initialization");
@@ -64,6 +64,9 @@ std::vector<std::string> ServerClient::getAllLights(void) {
             } else {
                 logging::logError("Unexpected return, array expected but got: " + jsonLightsList.dump());
             }
+
+            // Successfully queried the server with OK_200, even if the server returns a weird body
+            success = true;
         } else {
             logging::logError("Received unexpected status <" + std::to_string(res->status) + ">");
         }
@@ -72,5 +75,5 @@ std::vector<std::string> ServerClient::getAllLights(void) {
         logging::logError(httplib::to_string(err));
     }
 
-    return retList;
+    return success;
 }
