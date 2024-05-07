@@ -19,3 +19,4 @@ The ServerClient class is an abstraction around the http library for interacting
 Internally, the Light objects are held in a hash map (unordered_map) using their ID as key for quick access. A temporary hash map is created every iteration of checking the server, and initially swapped with the contents of the saved Lights. With the server's results, it will check if a light exists and if it does, it will check if the light was updated. The light is then added to the saved lights map, and removed from the temp map. If a light was not in temp map, it must be new and is added to saved lights map. At the end of checking the server's responses, any remaining lights in temp map must have been deleted and logged as deleted, and not put into the saved map. This keeps the time and space complexity of this algorithm at O(n).
 # Thank you
 This was a fun challenge. Feel free to reach out at damien.westerman@outlook.com.
+
