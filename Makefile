@@ -60,7 +60,7 @@ help:
 	@echo "****************************************************************"
 	@echo
 	@echo "Targets:"
-	@echo "   make all   : compile all cpp files in src/ into ./lights_monitor"
+	@echo "   make run   : compile all cpp files in src/ into ./lights_monitor"
 	@echo "                and launch the project"
 	@echo "   make build : compile all cpp files in src/ into ./lights_monitor"
 	@echo "   make clean : cleans the project"
