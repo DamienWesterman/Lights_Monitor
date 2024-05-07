@@ -3,8 +3,8 @@
 *
 * Applicant     Damien Westerman
 * Position:     C++ Developer
-* File:         LightsManager.hpp
-* Description:  Class declaration to track the Lights statuses
+* File:         ServerClient.hpp
+* Description:  Class declaration to access the lights server
 *
 ***************************************************************************************************/
 

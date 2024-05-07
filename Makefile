@@ -22,7 +22,7 @@ TARGET := ./lights_monitor
 CFLAGS += -I$(INCLUDE_DIR)
 CFLAGS += -Wall
 CFLAGS += -Werror
-CFLAGS += -Wno-unknown-pragmas
+CFLAGS += -Wno-unknown-pragmas # Suppress unknown pragmas in cmdparser.hpp
 CFLAGS += -std=c++14
 ifeq (true,$(DEBUG))
 CFLAGS += -DDEBUG

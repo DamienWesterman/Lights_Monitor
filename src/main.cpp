@@ -4,7 +4,7 @@
 * Applicant     Damien Westerman
 * Position:     C++ Developer
 * File:         main.cpp
-* Description:  Logging utility funcitons
+* Description:  Contains the main function
 *
 ***************************************************************************************************/
 
